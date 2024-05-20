@@ -8,6 +8,7 @@ import sys
 from airbyte_cdk.entrypoint import launch
 from .destination import DestinationIndexify
 
+
 def run():
     destination = DestinationIndexify()
     destination.run(sys.argv[1:])
