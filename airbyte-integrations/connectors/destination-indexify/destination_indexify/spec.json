@@ -15,6 +15,13 @@
         "default": "http://localhost:8900",
         "description": "URL to your Indexify server.",
         "always_show": true
+      },
+      "namespace": {
+        "title": "Namespace",
+        "type": "string",
+        "default": "default",
+        "description": "Namespace to insert data into.",
+        "always_show": true
       }
     }
   }

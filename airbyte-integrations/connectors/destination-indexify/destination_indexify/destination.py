@@ -49,20 +49,12 @@ class DestinationIndexify(Destination):
         """
 
         service_url = config["service_url"]
+        namespace = config.get("namespace") or "default"
+        client = IndexifyClient(service_url, namespace)
 
         for message in input_messages:
             if message.type == Type.RECORD:
-                record = message.record
-
-                # Use the specified namespace or default.
-                namespace = record.namespace
-                if not namespace:
-                    namespace = "default"
-
-                data = record.data
-
-                client = IndexifyClient(service_url, namespace)
-
+                data = message.record.data
                 print(data)
 
     def check(
