@@ -5,12 +5,14 @@
 import logging
 from typing import Any, Iterable, Mapping
 
+from indexify import IndexifyClient
 from airbyte_cdk.destinations import Destination
 from airbyte_cdk.models import (
     AirbyteConnectionStatus,
     AirbyteMessage,
     ConfiguredAirbyteCatalog,
-    Status
+    Status,
+    Type
 )
 
 
@@ -22,7 +24,6 @@ class DestinationIndexify(Destination):
         input_messages: Iterable[AirbyteMessage]
     ) -> Iterable[AirbyteMessage]:
         """
-        TODO
         Reads the input stream of messages, config, and catalog to write
         data to the destination.
 
@@ -47,7 +48,22 @@ class DestinationIndexify(Destination):
             AirbyteMessage structs
         """
 
-        pass
+        service_url = config["service_url"]
+
+        for message in input_messages:
+            if message.type == Type.RECORD:
+                record = message.record
+
+                # Use the specified namespace or default.
+                namespace = record.namespace
+                if not namespace:
+                    namespace = "default"
+
+                data = record.data
+
+                client = IndexifyClient(service_url, namespace)
+
+                print(data)
 
     def check(
         self,
@@ -69,8 +85,11 @@ class DestinationIndexify(Destination):
 
         :return: AirbyteConnectionStatus indicating a Success or Failure
         """
+
+        service_url = config["service_url"]
+
         try:
-            # TODO
+            IndexifyClient(service_url)
             return AirbyteConnectionStatus(status=Status.SUCCEEDED)
         except Exception as e:
             return AirbyteConnectionStatus(
